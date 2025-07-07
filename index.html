@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>📊 Dashboard: Google Sheet Data</h1>
+  <canvas id="myChart" width="400" height="200"></canvas>
+
+  <script>
+    async function fetchData() {
+      const sheetId = 'YOUR_SHEET_ID_HERE';
+      const range = 'Sheet1!A1:B10'; // Customize your range
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=YOUR_API_KEY`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const labels = data.values.slice(1).map(row => row[0]);
+      const values = data.values.slice(1).map(row => parseFloat(row[1]));
+
+      const ctx = document.getElementById('myChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Data from Google Sheet',
+            data: values,
+            backgroundColor: 'rgba(75, 192, 192, 0.6)'
+          }]
+        }
+      });
+    }
+
+    fetchData();
+  </script>
+</body>
+</html>
